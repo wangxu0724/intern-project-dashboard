@@ -8,7 +8,6 @@
   const state = {
     records: [],
     view: "schedule",
-    importType: "file",
     mergeMode: "replace",
     pendingFile: null,
   };
@@ -28,7 +27,6 @@
     uploadDialog: document.querySelector("#uploadDialog"),
     fileInput: document.querySelector("#fileInput"),
     fileNameLabel: document.querySelector("#fileNameLabel"),
-    feishuUrl: document.querySelector("#feishuUrl"),
     confirmImport: document.querySelector("#confirmImport"),
     exportMenu: document.querySelector("#exportMenu"),
     exportButton: document.querySelector("#exportButton"),
@@ -317,15 +315,6 @@
 
   async function saveRecords() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state.records));
-    const response = await fetch("/api/records", {
-      method: "PUT",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ records: state.records }),
-    });
-    if (!response.ok) {
-      const payload = await response.json().catch(() => ({}));
-      throw new Error(payload.error || "共享数据保存失败");
-    }
   }
 
   function showToast(message, type) {
@@ -361,19 +350,6 @@
       return normalizeMatrix(matrix, file.name, sheetName);
     });
     await applyImportedRecords(records, file.name);
-  }
-
-  async function importFeishuLink(url) {
-    const response = await fetch("/api/feishu-import", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ url }),
-    });
-    const payload = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(payload.error || "飞书链接读取失败");
-    const matrix = payload.matrix || matrixFromText(payload.text);
-    const records = normalizeMatrix(matrix, payload.title || "飞书链接", "");
-    await applyImportedRecords(records, "飞书数据");
   }
 
   function exportRows(records) {
@@ -433,18 +409,6 @@
   }
 
   async function loadInitialData() {
-    try {
-      const response = await fetch("/api/records");
-      const payload = await response.json();
-      if (response.ok && Array.isArray(payload.records) && payload.records.length) {
-        state.records = payload.records;
-        elements.sourceLabel.textContent = "共享数据";
-        return;
-      }
-    } catch {
-      // Fall back to the current browser and then the source sheet.
-    }
-
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       try {
@@ -459,17 +423,12 @@
       }
     }
 
-    elements.sourceLabel.textContent = "正在读取飞书";
-    const response = await fetch("/api/feishu-import", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ url: window.INITIAL_SOURCE_URL }),
-    });
-    const payload = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(payload.error || "初始数据读取失败");
-    state.records = normalizeMatrix(payload.matrix || matrixFromText(payload.text), "飞书数据", "8月");
-    await saveRecords();
-    elements.sourceLabel.textContent = "飞书数据";
+    elements.sourceLabel.textContent = "正在读取数据";
+    const response = await fetch("data/records.json", { cache: "no-store" });
+    const records = await response.json();
+    if (!response.ok || !Array.isArray(records)) throw new Error("初始数据读取失败");
+    state.records = records;
+    elements.sourceLabel.textContent = "公开数据";
   }
 
   function bindEvents() {
@@ -491,13 +450,6 @@
         tab.setAttribute("aria-selected", String(tab === button));
       });
       render();
-    }));
-
-    document.querySelectorAll("[data-import-type]").forEach((button) => button.addEventListener("click", () => {
-      state.importType = button.dataset.importType;
-      document.querySelectorAll("[data-import-type]").forEach((item) => item.classList.toggle("active", item === button));
-      document.querySelector("#fileImportPane").hidden = state.importType !== "file";
-      document.querySelector("#linkImportPane").hidden = state.importType !== "link";
     }));
 
     document.querySelectorAll("[data-merge-mode]").forEach((button) => button.addEventListener("click", () => {
@@ -529,14 +481,8 @@
       elements.confirmImport.disabled = true;
       elements.confirmImport.textContent = "正在导入...";
       try {
-        if (state.importType === "file") {
-          if (!state.pendingFile) throw new Error("请先选择文件");
-          await importFile(state.pendingFile);
-        } else {
-          const url = elements.feishuUrl.value.trim();
-          if (!url) throw new Error("请输入飞书链接");
-          await importFeishuLink(url);
-        }
+        if (!state.pendingFile) throw new Error("请先选择文件");
+        await importFile(state.pendingFile);
       } catch (error) {
         showToast(error.message || "导入失败", "error");
       } finally {

@@ -1,6 +1,0 @@
-.git
-.agents
-.tunnel-tools
-node_modules
-*.log
-data/records.json.tmp

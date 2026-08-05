@@ -1,9 +1,0 @@
-services:
-  - type: web
-    name: intern-project-dashboard
-    runtime: docker
-    plan: free
-    autoDeployTrigger: commit
-    healthCheckPath: /api/health
-    dockerfilePath: ./Dockerfile
-    dockerContext: .

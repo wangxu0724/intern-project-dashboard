@@ -143,24 +143,12 @@
           <div><h2>导入数据</h2><p>更新当前浏览器中的看板数据</p></div>
           <button class="icon-button" value="cancel" type="submit" aria-label="关闭"><i data-lucide="x"></i></button>
         </div>
-        <div class="segmented-control" id="importTypeControl">
-          <button class="active" type="button" data-import-type="file"><i data-lucide="file-spreadsheet"></i>Excel / CSV</button>
-          <button type="button" data-import-type="link"><i data-lucide="link-2"></i>飞书链接</button>
-        </div>
-
         <div class="import-pane" id="fileImportPane">
           <label class="drop-zone" id="dropZone">
             <input id="fileInput" type="file" accept=".xlsx,.xls,.csv,.tsv" />
             <span class="drop-icon"><i data-lucide="file-up"></i></span>
             <strong id="fileNameLabel">选择 Excel 或 CSV 文件</strong>
             <span>.xlsx、.xls、.csv、.tsv</span>
-          </label>
-        </div>
-
-        <div class="import-pane" id="linkImportPane" hidden>
-          <label class="dialog-field">
-            <span>公开链接</span>
-            <div class="input-with-icon"><i data-lucide="link-2"></i><input id="feishuUrl" type="url" placeholder="https://example.feishu.cn/sheets/..." /></div>
           </label>
         </div>
 
@@ -183,7 +171,6 @@
 
     <script src="vendor/xlsx.full.min.js"></script>
     <script src="vendor/lucide.min.js"></script>
-    <script src="seed-data.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
