@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>实习生项目看板</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="brand-block">
+        <div class="brand-mark" aria-hidden="true">X</div>
+        <div>
+          <p class="company-name">雪梨教育</p>
+          <h1>实习生项目看板</h1>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span class="sync-status"><span class="status-dot"></span><span id="sourceLabel">飞书数据</span></span>
+        <button class="button secondary" id="uploadButton" type="button">
+          <i data-lucide="upload"></i><span>导入数据</span>
+        </button>
+        <div class="menu-wrap">
+          <button class="button primary" id="exportButton" type="button" aria-expanded="false">
+            <i data-lucide="download"></i><span>下载</span><i data-lucide="chevron-down"></i>
+          </button>
+          <div class="export-menu" id="exportMenu" hidden>
+            <button type="button" data-export="xlsx"><i data-lucide="sheet"></i>Excel 表格</button>
+            <button type="button" data-export="md"><i data-lucide="file-text"></i>Markdown 表格</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="filter-band" aria-label="筛选条件">
+        <div class="filter-inner">
+          <label class="filter-field">
+            <span>年月</span>
+            <select id="monthFilter"></select>
+          </label>
+          <label class="filter-field">
+            <span>一级部门</span>
+            <select id="departmentFilter"></select>
+          </label>
+          <label class="filter-field compact-filter">
+            <span>紧急度</span>
+            <select id="urgencyFilter">
+              <option value="all">全部</option>
+              <option value="5">5 星</option>
+              <option value="4">4 星及以上</option>
+              <option value="3">3 星及以上</option>
+            </select>
+          </label>
+          <label class="search-field">
+            <i data-lucide="search"></i>
+            <input id="searchInput" type="search" placeholder="搜索姓名、岗位、任务或带教人" />
+          </label>
+          <button class="icon-button" id="resetFilters" type="button" title="重置筛选" aria-label="重置筛选">
+            <i data-lucide="rotate-ccw"></i>
+          </button>
+        </div>
+      </section>
+
+      <section class="metrics-band" aria-label="数据概览">
+        <div class="metric-item">
+          <span class="metric-icon blue"><i data-lucide="users"></i></span>
+          <div><strong id="internCount">0</strong><span>在岗实习生</span></div>
+        </div>
+        <div class="metric-item">
+          <span class="metric-icon green"><i data-lucide="building-2"></i></span>
+          <div><strong id="departmentCount">0</strong><span>涉及部门</span></div>
+        </div>
+        <div class="metric-item">
+          <span class="metric-icon orange"><i data-lucide="flame"></i></span>
+          <div><strong id="urgentCount">0</strong><span>五星任务</span></div>
+        </div>
+        <div class="metric-item">
+          <span class="metric-icon teal"><i data-lucide="user-round-check"></i></span>
+          <div><strong id="mentorCount">0</strong><span>带教负责人</span></div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <div class="content-heading">
+          <div>
+            <h2 id="viewTitle">8 月工作安排</h2>
+            <p id="resultSummary">共 0 条安排</p>
+          </div>
+          <div class="view-tabs" role="tablist" aria-label="看板视图">
+            <button class="active" type="button" role="tab" data-view="schedule" aria-selected="true">工作安排</button>
+            <button type="button" role="tab" data-view="overview" aria-selected="false">部门概览</button>
+          </div>
+        </div>
+
+        <div id="scheduleView">
+          <div class="table-shell">
+            <table>
+              <thead>
+                <tr>
+                  <th>实习生 / 岗位</th>
+                  <th>部门</th>
+                  <th class="task-column">当月工作安排</th>
+                  <th>带教人</th>
+                  <th>入职日期</th>
+                  <th>学校</th>
+                  <th>紧急度</th>
+                  <th>备注</th>
+                </tr>
+              </thead>
+              <tbody id="scheduleBody"></tbody>
+            </table>
+          </div>
+          <div class="mobile-list" id="mobileList"></div>
+        </div>
+
+        <div id="overviewView" hidden>
+          <div class="overview-layout">
+            <section class="overview-panel">
+              <div class="panel-title"><h3>部门人数分布</h3><span id="overviewTotal"></span></div>
+              <div class="department-bars" id="departmentBars"></div>
+            </section>
+            <section class="overview-panel">
+              <div class="panel-title"><h3>任务紧急度</h3><span>按当前筛选</span></div>
+              <div class="urgency-breakdown" id="urgencyBreakdown"></div>
+            </section>
+          </div>
+        </div>
+
+        <div class="empty-state" id="emptyState" hidden>
+          <i data-lucide="inbox"></i>
+          <strong>没有匹配的工作安排</strong>
+          <span>调整年月、部门或搜索条件</span>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="uploadDialog">
+      <form method="dialog" class="dialog-shell" id="uploadForm">
+        <div class="dialog-header">
+          <div><h2>导入数据</h2><p>更新当前浏览器中的看板数据</p></div>
+          <button class="icon-button" value="cancel" type="submit" aria-label="关闭"><i data-lucide="x"></i></button>
+        </div>
+        <div class="segmented-control" id="importTypeControl">
+          <button class="active" type="button" data-import-type="file"><i data-lucide="file-spreadsheet"></i>Excel / CSV</button>
+          <button type="button" data-import-type="link"><i data-lucide="link-2"></i>飞书链接</button>
+        </div>
+
+        <div class="import-pane" id="fileImportPane">
+          <label class="drop-zone" id="dropZone">
+            <input id="fileInput" type="file" accept=".xlsx,.xls,.csv,.tsv" />
+            <span class="drop-icon"><i data-lucide="file-up"></i></span>
+            <strong id="fileNameLabel">选择 Excel 或 CSV 文件</strong>
+            <span>.xlsx、.xls、.csv、.tsv</span>
+          </label>
+        </div>
+
+        <div class="import-pane" id="linkImportPane" hidden>
+          <label class="dialog-field">
+            <span>公开链接</span>
+            <div class="input-with-icon"><i data-lucide="link-2"></i><input id="feishuUrl" type="url" placeholder="https://example.feishu.cn/sheets/..." /></div>
+          </label>
+        </div>
+
+        <div class="dialog-row">
+          <span>导入方式</span>
+          <div class="segmented-control small" id="mergeModeControl">
+            <button class="active" type="button" data-merge-mode="replace">替换</button>
+            <button type="button" data-merge-mode="append">追加</button>
+          </div>
+        </div>
+
+        <div class="dialog-actions">
+          <button class="button secondary" value="cancel" type="submit">取消</button>
+          <button class="button primary" id="confirmImport" type="button"><i data-lucide="upload"></i>开始导入</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="vendor/xlsx.full.min.js"></script>
+    <script src="vendor/lucide.min.js"></script>
+    <script src="seed-data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

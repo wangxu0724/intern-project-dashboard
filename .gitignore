@@ -1,0 +1,8 @@
+node_modules/
+.tunnel-tools/
+.pnpm-store/
+*.log
+cloudflared.exe
+data/records.json.tmp
+.DS_Store
+npm-debug.log*
