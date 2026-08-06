@@ -37,10 +37,13 @@
     <main>
       <section class="filter-band" aria-label="筛选条件">
         <div class="filter-inner">
-          <label class="filter-field">
+          <div class="filter-field date-filter">
             <span>年月</span>
-            <select id="monthFilter"></select>
-          </label>
+            <span class="date-selects">
+              <select id="yearFilter" aria-label="选择年份"></select>
+              <select id="monthFilter" aria-label="选择月份"></select>
+            </span>
+          </div>
           <label class="filter-field">
             <span>一级部门</span>
             <select id="departmentFilter"></select>

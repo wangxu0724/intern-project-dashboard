@@ -13,6 +13,7 @@
   };
 
   const elements = {
+    year: document.querySelector("#yearFilter"),
     month: document.querySelector("#monthFilter"),
     department: document.querySelector("#departmentFilter"),
     urgency: document.querySelector("#urgencyFilter"),
@@ -59,12 +60,6 @@
     match = text.match(/(?:^|\D)(\d{1,2})月/);
     if (match) return `${DEFAULT_YEAR}-${String(Number(match[1])).padStart(2, "0")}`;
     return fallbackMonth || `${DEFAULT_YEAR}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
-  }
-
-  function formatMonth(month) {
-    const [year, rawMonth] = String(month).split("-");
-    const monthNumber = Number(rawMonth);
-    return `${year} 年 ${MONTH_LABELS[monthNumber - 1] || monthNumber}月`;
   }
 
   function normalizeDate(value) {
@@ -201,6 +196,7 @@
 
   function currentFilters() {
     return {
+      year: elements.year.value,
       month: elements.month.value,
       department: elements.department.value,
       urgency: elements.urgency.value,
@@ -211,7 +207,11 @@
   function filteredRecords() {
     const filters = currentFilters();
     return state.records
-      .filter((record) => !filters.month || record.month === filters.month)
+      .filter((record) => {
+        const [recordYear, recordMonth] = String(record.month || "").split("-");
+        return (!filters.year || recordYear === filters.year)
+          && (!filters.month || recordMonth === filters.month);
+      })
       .filter((record) => filters.department === "all" || record.department === filters.department)
       .filter((record) => filters.urgency === "all" || record.urgency >= Number(filters.urgency))
       .filter((record) => {
@@ -286,9 +286,12 @@
 
   function render() {
     const records = filteredRecords();
+    const year = elements.year.value;
     const month = elements.month.value;
     const department = elements.department.value;
-    document.querySelector("#viewTitle").textContent = month ? `${Number(month.split("-")[1])} 月工作安排` : "工作安排";
+    document.querySelector("#viewTitle").textContent = year && month
+      ? `${year} 年 ${Number(month)} 月工作安排`
+      : "工作安排";
     document.querySelector("#resultSummary").textContent = `${department === "all" ? "全部部门" : department} · 共 ${records.length} 条安排`;
     renderMetrics(records);
     renderTable(records);
@@ -302,11 +305,21 @@
   }
 
   function populateFilters(preferredMonth) {
-    const currentMonth = preferredMonth || elements.month.value;
+    const availableMonths = [...new Set(state.records.map((record) => record.month).filter(Boolean))].sort().reverse();
+    const fallbackMonth = availableMonths[0] || `${DEFAULT_YEAR}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
+    const [preferredYear, preferredMonthNumber] = String(preferredMonth || "").split("-");
+    const currentYear = preferredYear || elements.year.value || fallbackMonth.split("-")[0];
+    const currentMonth = preferredMonthNumber || elements.month.value || fallbackMonth.split("-")[1];
     const currentDepartment = elements.department.value || "all";
-    const months = [...new Set(state.records.map((record) => record.month).filter(Boolean))].sort().reverse();
-    elements.month.innerHTML = months.map((month) => `<option value="${month}">${escapeHtml(formatMonth(month))}</option>`).join("");
-    elements.month.value = months.includes(currentMonth) ? currentMonth : (months[0] || "");
+    const years = [...new Set(availableMonths.map((month) => month.split("-")[0]))].sort().reverse();
+    if (!years.includes(currentYear)) years.unshift(currentYear);
+    elements.year.innerHTML = years.map((year) => `<option value="${year}">${year} 年</option>`).join("");
+    elements.year.value = currentYear;
+    elements.month.innerHTML = MONTH_LABELS.map((label, index) => {
+      const monthNumber = String(index + 1).padStart(2, "0");
+      return `<option value="${monthNumber}">${label}月</option>`;
+    }).join("");
+    elements.month.value = currentMonth;
 
     const departments = [...new Set(state.records.map((record) => record.department).filter(Boolean))].sort((a, b) => a.localeCompare(b, "zh-CN"));
     elements.department.innerHTML = `<option value="all">全部部门</option>${departments.map((department) => `<option value="${escapeHtml(department)}">${escapeHtml(department)}</option>`).join("")}`;
@@ -381,12 +394,18 @@
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
+  function selectedPeriod() {
+    const year = elements.year.value;
+    const month = elements.month.value;
+    return year && month ? `${year}-${month}` : "全部时间";
+  }
+
   function exportMarkdown(records) {
     const rows = exportRows(records);
     const headers = Object.keys(rows[0] || {});
     const clean = (value) => String(value ?? "").replaceAll("|", "\\|").replace(/\r?\n/g, " ");
     const markdown = [
-      `# 实习生项目安排（${elements.month.value || "全部时间"}）`,
+      `# 实习生项目安排（${selectedPeriod()}）`,
       "",
       `筛选部门：${elements.department.value === "all" ? "全部部门" : elements.department.value}`,
       "",
@@ -395,7 +414,7 @@
       ...rows.map((row) => `| ${headers.map((header) => clean(row[header])).join(" | ")} |`),
       "",
     ].join("\n");
-    downloadBlob(markdown, "text/markdown;charset=utf-8", `实习生项目安排_${elements.month.value || "全部"}.md`);
+    downloadBlob(markdown, "text/markdown;charset=utf-8", `实习生项目安排_${selectedPeriod()}.md`);
   }
 
   function exportExcel(records) {
@@ -405,7 +424,7 @@
     worksheet["!cols"] = [6, 10, 14, 16, 18, 10, 22, 18, 9, 12, 16, 42, 12, 20].map((wch) => ({ wch }));
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "工作安排");
-    XLSX.writeFile(workbook, `实习生项目安排_${elements.month.value || "全部"}.xlsx`, { compression: true });
+    XLSX.writeFile(workbook, `实习生项目安排_${selectedPeriod()}.xlsx`, { compression: true });
   }
 
   async function loadInitialData() {
@@ -432,13 +451,13 @@
   }
 
   function bindEvents() {
-    [elements.month, elements.department, elements.urgency].forEach((element) => element.addEventListener("change", render));
+    [elements.year, elements.month, elements.department, elements.urgency].forEach((element) => element.addEventListener("change", render));
     elements.search.addEventListener("input", render);
     document.querySelector("#resetFilters").addEventListener("click", () => {
       elements.department.value = "all";
       elements.urgency.value = "all";
       elements.search.value = "";
-      populateFilters(elements.month.options[0]?.value);
+      populateFilters([...new Set(state.records.map((record) => record.month).filter(Boolean))].sort().at(-1));
       render();
     });
 
