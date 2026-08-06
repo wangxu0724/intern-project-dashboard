@@ -315,9 +315,9 @@
     if (!years.includes(currentYear)) years.unshift(currentYear);
     elements.year.innerHTML = years.map((year) => `<option value="${year}">${year} 年</option>`).join("");
     elements.year.value = currentYear;
-    elements.month.innerHTML = MONTH_LABELS.map((label, index) => {
+    elements.month.innerHTML = MONTH_LABELS.map((_, index) => {
       const monthNumber = String(index + 1).padStart(2, "0");
-      return `<option value="${monthNumber}">${label}月</option>`;
+      return `<option value="${monthNumber}">${index + 1}月</option>`;
     }).join("");
     elements.month.value = currentMonth;
 
