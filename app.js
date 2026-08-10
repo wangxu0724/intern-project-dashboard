@@ -65,12 +65,16 @@
   function normalizeDate(value) {
     if (!value) return "";
     if (value instanceof Date && !Number.isNaN(value.valueOf())) {
-      return value.toISOString().slice(0, 10);
+      return `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, "0")}-${String(value.getDate()).padStart(2, "0")}`;
     }
     const text = String(value).trim().replace(/[\.\/年]/g, "-").replace("月", "-").replace("日", "");
-    const match = text.match(/(20\d{2})-(\d{1,2})-(\d{1,2})/);
+    let match = text.match(/^(20\d{2})-(\d{1,2})-(\d{1,2})/);
+    if (match) return `${match[1]}-${String(Number(match[2])).padStart(2, "0")}-${String(Number(match[3])).padStart(2, "0")}`;
+
+    match = text.match(/^(\d{1,2})-(\d{1,2})-(20\d{2}|\d{2})/);
     if (!match) return String(value).trim();
-    return `${match[1]}-${String(Number(match[2])).padStart(2, "0")}-${String(Number(match[3])).padStart(2, "0")}`;
+    const year = match[3].length === 2 ? `20${match[3]}` : match[3];
+    return `${year}-${String(Number(match[1])).padStart(2, "0")}-${String(Number(match[2])).padStart(2, "0")}`;
   }
 
   function urgencyNumber(value) {
@@ -238,7 +242,7 @@
         <td><span class="department-tag">${escapeHtml(record.department)}</span><span class="cell-secondary">${escapeHtml(record.subDepartment || "-")}</span></td>
         <td class="task-column">${escapeHtml(record.schedule)}</td>
         <td>${escapeHtml(record.mentor || "-")}</td>
-        <td>${escapeHtml(record.startDate || "-")}</td>
+        <td>${escapeHtml(normalizeDate(record.startDate) || "-")}</td>
         <td>${escapeHtml(record.school || "-")}<span class="cell-secondary">${escapeHtml([record.education, record.major].filter(Boolean).join(" · "))}</span></td>
         <td>${starsMarkup(record.urgency)}</td>
         <td class="${record.notes ? "" : "notes-empty"}">${escapeHtml(record.notes || "-")}</td>
@@ -254,7 +258,7 @@
         <div class="mobile-meta">
           <span><i data-lucide="building-2"></i>${escapeHtml(record.department)} / ${escapeHtml(record.subDepartment || "-")}</span>
           <span><i data-lucide="user-round-check"></i>${escapeHtml(record.mentor || "-")}</span>
-          <span><i data-lucide="calendar-days"></i>${escapeHtml(record.startDate || "-")}</span>
+          <span><i data-lucide="calendar-days"></i>${escapeHtml(normalizeDate(record.startDate) || "-")}</span>
         </div>
       </article>`).join("");
   }
@@ -376,7 +380,7 @@
       学校: record.school,
       专业: record.major,
       学历: record.education,
-      入职日期: record.startDate,
+      入职日期: normalizeDate(record.startDate),
       "部门负责人/带教人": record.mentor,
       工作安排: record.schedule,
       项目紧急度: `${record.urgency} 星`,
