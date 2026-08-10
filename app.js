@@ -432,14 +432,13 @@
   }
 
   async function loadInitialData() {
+    let savedRecords = [];
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length) {
-          state.records = parsed;
-          elements.sourceLabel.textContent = "本机数据";
-          return;
+          savedRecords = parsed;
         }
       } catch {
         localStorage.removeItem(STORAGE_KEY);
@@ -447,11 +446,17 @@
     }
 
     elements.sourceLabel.textContent = "正在读取数据";
-    const response = await fetch("data/records.json", { cache: "no-store" });
-    const records = await response.json();
-    if (!response.ok || !Array.isArray(records)) throw new Error("初始数据读取失败");
-    state.records = records;
-    elements.sourceLabel.textContent = "公开数据";
+    try {
+      const response = await fetch("data/records.json", { cache: "no-store" });
+      const records = await response.json();
+      if (!response.ok || !Array.isArray(records)) throw new Error("初始数据读取失败");
+      state.records = savedRecords.length ? deduplicate([...records, ...savedRecords]) : records;
+      elements.sourceLabel.textContent = savedRecords.length ? "本机数据" : "公开数据";
+    } catch (error) {
+      if (!savedRecords.length) throw error;
+      state.records = savedRecords;
+      elements.sourceLabel.textContent = "本机数据";
+    }
   }
 
   function bindEvents() {
