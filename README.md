@@ -30,6 +30,8 @@ npm start
 - `FEISHU_APP_SECRET`
 - `FEISHU_REDIRECT_URI`：上面的回调地址
 
+Render Blueprint：`https://dashboard.render.com/blueprint/new?repo=https://github.com/wangxu0724/intern-project-dashboard`
+
 应用需要申请读取云文档/电子表格的用户授权权限。部署完成后，打开 Render 提供的地址即可使用全部功能；GitHub Pages 地址仍可作为纯静态查看入口。
 
 ## 当前公开地址
