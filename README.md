@@ -26,9 +26,9 @@ npm start
 
 在 Render 添加环境变量：
 
-- `FEISHU_APP_ID`
+- `FEISHU_APP_ID`：已写入部署配置
 - `FEISHU_APP_SECRET`
-- `FEISHU_REDIRECT_URI`：上面的回调地址
+- `FEISHU_REDIRECT_URI`：已预设为 `https://intern-project-dashboard.onrender.com/auth/feishu/callback`
 
 Render Blueprint：`https://dashboard.render.com/blueprint/new?repo=https://github.com/wangxu0724/intern-project-dashboard`
 

@@ -11,8 +11,8 @@ services:
       - key: NODE_ENV
         value: production
       - key: FEISHU_APP_ID
-        sync: false
+        value: cli_aaf1436096389bfb
       - key: FEISHU_APP_SECRET
         sync: false
       - key: FEISHU_REDIRECT_URI
-        sync: false
+        value: https://intern-project-dashboard.onrender.com/auth/feishu/callback
