@@ -278,6 +278,15 @@ dialog::backdrop { background: rgba(31, 35, 41, .46); }
 .input-with-icon { display: flex; align-items: center; gap: 8px; padding: 0 10px; }
 .input-with-icon svg { width: 16px; color: var(--faint); }
 .input-with-icon input { min-width: 0; flex: 1; border: 0; outline: 0; }
+.auth-row { min-height: 34px; margin-top: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 12px; }
+.small-button { min-height: 32px; padding: 0 10px; }
+.link-read-button { width: 100%; margin-top: 8px; justify-content: center; }
+.preview-heading { margin-top: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.preview-heading span { color: var(--muted); font-size: 12px; }
+.sheet-preview { max-height: 220px; margin-top: 8px; overflow: auto; border: 1px solid var(--line); border-radius: 6px; }
+.sheet-preview table { min-width: 500px; font-size: 12px; }
+.sheet-preview th, .sheet-preview td { padding: 7px 9px; white-space: nowrap; }
+.sheet-preview th { position: sticky; top: 0; z-index: 1; }
 .dialog-row { justify-content: space-between; gap: 16px; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
 .dialog-actions { justify-content: flex-end; gap: 9px; margin-top: 24px; }
 
@@ -326,6 +335,8 @@ dialog::backdrop { background: rgba(31, 35, 41, .46); }
   .overview-layout { grid-template-columns: 1fr; padding: 14px; }
   .bar-row { grid-template-columns: 100px minmax(70px, 1fr) 30px; }
   dialog { width: calc(100vw - 24px); }
+  .auth-row { align-items: flex-start; }
+  .preview-heading { align-items: flex-start; flex-direction: column; gap: 3px; }
 }
 
 @media (max-width: 430px) {

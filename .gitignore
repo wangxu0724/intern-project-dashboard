@@ -3,3 +3,4 @@ data/records.json.tmp
 .DS_Store
 npm-debug.log*
 node_modules/
+.env

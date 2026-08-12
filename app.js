@@ -8,8 +8,12 @@
   const state = {
     records: [],
     view: "schedule",
+    importType: "file",
     mergeMode: "replace",
     pendingFile: null,
+    feishuSheets: [],
+    feishuPreview: [],
+    feishuPreviewTitle: "",
   };
 
   const elements = {
@@ -26,6 +30,14 @@
     departmentBars: document.querySelector("#departmentBars"),
     urgencyBreakdown: document.querySelector("#urgencyBreakdown"),
     uploadDialog: document.querySelector("#uploadDialog"),
+    feishuUrl: document.querySelector("#feishuUrl"),
+    feishuAuthButton: document.querySelector("#feishuAuthButton"),
+    feishuAuthStatus: document.querySelector("#feishuAuthStatus"),
+    readFeishuButton: document.querySelector("#readFeishuButton"),
+    sheetPickerPane: document.querySelector("#sheetPickerPane"),
+    sheetSelect: document.querySelector("#sheetSelect"),
+    sheetPreview: document.querySelector("#sheetPreview"),
+    previewStatus: document.querySelector("#previewStatus"),
     fileInput: document.querySelector("#fileInput"),
     fileNameLabel: document.querySelector("#fileNameLabel"),
     confirmImport: document.querySelector("#confirmImport"),
@@ -369,6 +381,75 @@
     await applyImportedRecords(records, file.name);
   }
 
+  function renderSheetPreview(matrix) {
+    const rows = Array.isArray(matrix) ? matrix.slice(0, 9) : [];
+    if (!rows.length) {
+      elements.sheetPreview.innerHTML = "<div class=\"preview-empty\">当前 Sheet 没有可预览的数据</div>";
+      return;
+    }
+    const columns = Math.max(...rows.map((row) => row.length), 0);
+    elements.sheetPreview.innerHTML = `<table><tbody>${rows.map((row, rowIndex) => `<tr>${Array.from({ length: columns }, (_, index) => {
+      const value = escapeHtml(row[index] ?? "");
+      return rowIndex === 0 ? `<th>${value}</th>` : `<td>${value}</td>`;
+    }).join("")}</tr>`).join("")}</tbody></table>`;
+  }
+
+  async function checkFeishuAuth() {
+    const response = await fetch("/api/feishu/status", { cache: "no-store" });
+    const payload = await response.json().catch(() => ({}));
+    const connected = response.ok && payload.connected;
+    elements.feishuAuthStatus.textContent = connected
+      ? `已授权${payload.name ? `：${payload.name}` : ""}`
+      : payload.configured === false ? "服务端待配置飞书应用" : "需要授权后读取飞书表格";
+    elements.feishuAuthButton.innerHTML = connected ? '<i data-lucide="check"></i>已授权' : '<i data-lucide="key-round"></i>授权飞书';
+    elements.feishuAuthButton.disabled = connected || payload.configured === false;
+    if (window.lucide) window.lucide.createIcons();
+    return connected;
+  }
+
+  async function loadFeishuSheets() {
+    const url = elements.feishuUrl.value.trim();
+    if (!url) throw new Error("请先粘贴飞书表格链接");
+    const connected = await checkFeishuAuth();
+    if (!connected) throw new Error("请先点击“授权飞书”完成授权");
+    elements.readFeishuButton.disabled = true;
+    elements.readFeishuButton.textContent = "正在读取 Sheet...";
+    const response = await fetch(`/api/feishu/sheets?url=${encodeURIComponent(url)}`, { cache: "no-store" });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(payload.error || "飞书表格读取失败");
+    state.feishuSheets = payload.sheets || [];
+    if (!state.feishuSheets.length) throw new Error("没有找到可读取的 Sheet");
+    elements.sheetSelect.innerHTML = state.feishuSheets.map((sheet) => `<option value="${escapeHtml(sheet.sheetId)}">${escapeHtml(sheet.title || sheet.sheetId)}</option>`).join("");
+    elements.sheetPickerPane.hidden = false;
+    await loadFeishuPreview();
+  }
+
+  async function loadFeishuPreview() {
+    const url = elements.feishuUrl.value.trim();
+    const sheetId = elements.sheetSelect.value;
+    const sheet = state.feishuSheets.find((item) => item.sheetId === sheetId);
+    if (!url || !sheetId) return;
+    elements.previewStatus.textContent = "正在读取预览...";
+    const response = await fetch(`/api/feishu/preview?url=${encodeURIComponent(url)}&sheet_id=${encodeURIComponent(sheetId)}`, { cache: "no-store" });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(payload.error || "Sheet 预览读取失败");
+    state.feishuPreview = payload.matrix || [];
+    state.feishuPreviewTitle = sheet?.title || sheetId;
+    elements.previewStatus.textContent = `预览前 ${Math.min(8, state.feishuPreview.length)} 行`;
+    renderSheetPreview(state.feishuPreview);
+  }
+
+  async function importFeishuSheet() {
+    if (!state.feishuPreview.length) throw new Error("请先读取并选择一个 Sheet");
+    const url = elements.feishuUrl.value.trim();
+    const sheetId = elements.sheetSelect.value;
+    const response = await fetch(`/api/feishu/preview?url=${encodeURIComponent(url)}&sheet_id=${encodeURIComponent(sheetId)}&full=1`, { cache: "no-store" });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(payload.error || "Sheet 数据读取失败");
+    const records = normalizeMatrix(payload.matrix || [], url, state.feishuPreviewTitle);
+    await applyImportedRecords(records, `飞书：${state.feishuPreviewTitle}`);
+  }
+
   function exportRows(records) {
     return records.map((record, index) => ({
       序号: index + 1,
@@ -471,6 +552,26 @@
     });
 
     document.querySelector("#uploadButton").addEventListener("click", () => elements.uploadDialog.showModal());
+    document.querySelectorAll("[data-import-type]").forEach((button) => button.addEventListener("click", async () => {
+      state.importType = button.dataset.importType;
+      document.querySelectorAll("[data-import-type]").forEach((item) => item.classList.toggle("active", item === button));
+      document.querySelector("#fileImportPane").hidden = state.importType !== "file";
+      document.querySelector("#linkImportPane").hidden = state.importType !== "link";
+      if (state.importType === "link") await checkFeishuAuth().catch(() => {});
+    }));
+    elements.feishuAuthButton.addEventListener("click", () => {
+      window.location.href = `/auth/feishu?return_to=${encodeURIComponent(window.location.href)}`;
+    });
+    elements.readFeishuButton.addEventListener("click", async () => {
+      try { await loadFeishuSheets(); }
+      catch (error) { showToast(error.message || "飞书读取失败", "error"); }
+      finally {
+        elements.readFeishuButton.disabled = false;
+        elements.readFeishuButton.innerHTML = '<i data-lucide="list-tree"></i>读取 Sheet 列表';
+        if (window.lucide) window.lucide.createIcons();
+      }
+    });
+    elements.sheetSelect.addEventListener("change", () => loadFeishuPreview().catch((error) => showToast(error.message || "预览读取失败", "error")));
     document.querySelectorAll("[data-view]").forEach((button) => button.addEventListener("click", () => {
       state.view = button.dataset.view;
       document.querySelectorAll("[data-view]").forEach((tab) => {
@@ -509,8 +610,12 @@
       elements.confirmImport.disabled = true;
       elements.confirmImport.textContent = "正在导入...";
       try {
-        if (!state.pendingFile) throw new Error("请先选择文件");
-        await importFile(state.pendingFile);
+        if (state.importType === "file") {
+          if (!state.pendingFile) throw new Error("请先选择文件");
+          await importFile(state.pendingFile);
+        } else {
+          await importFeishuSheet();
+        }
       } catch (error) {
         showToast(error.message || "导入失败", "error");
       } finally {
