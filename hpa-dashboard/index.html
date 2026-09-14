@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>9月18日团建｜轰趴馆对比看板</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#eef4fb;color:#182b49;font-family:"Microsoft YaHei","PingFang SC",Arial,sans-serif}
+.page{width:1440px;max-width:100%;margin:auto;padding:40px;background:linear-gradient(180deg,#f8fbff,#edf4fc)}
+.hero{position:relative;overflow:hidden;padding:36px 42px;border-radius:30px;color:#fff;background:linear-gradient(135deg,#0b2d60,#1e67c8 62%,#63b0fa);box-shadow:0 20px 48px rgba(12,51,108,.22)}
+.hero:after{content:"";position:absolute;right:-90px;top:-150px;width:430px;height:430px;border:1px solid rgba(255,255,255,.2);border-radius:50%;box-shadow:0 0 0 34px rgba(255,255,255,.05),0 0 0 68px rgba(255,255,255,.035)}
+.hero>*{position:relative;z-index:1}
+.eyebrow{font-size:16px;opacity:.9}
+.hero h1{margin:12px 0 10px;font-size:44px;letter-spacing:2px}
+.hero p{margin:0;font-size:17px;opacity:.93;line-height:1.75}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:24px 0}
+.stat{padding:22px 24px;background:#fff;border:1px solid #dfe9f5;border-radius:22px;box-shadow:0 10px 28px rgba(23,59,117,.08)}
+.stat b{display:block;font-size:34px;color:#1b61c2;line-height:1.2}
+.stat span{display:block;margin-top:8px;color:#657a96;font-size:15px}
+.section-title{display:flex;align-items:center;gap:12px;margin:30px 0 15px;color:#123d79;font-size:27px;font-weight:900}
+.tag{padding:5px 13px;border-radius:99px;background:#dbeafe;color:#1d5fc3;font-size:14px;font-weight:700}
+.decision{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.dcard{padding:20px 22px;border-radius:22px;background:#fff;border:1px solid #e0eaf5;box-shadow:0 9px 26px rgba(23,59,117,.075)}
+.dcard h3{margin:0 0 9px;color:#163f7a;font-size:19px;line-height:1.4}
+.dcard p{margin:0;line-height:1.7;color:#435a77;font-size:14px}
+.dcard b{color:#14508f}
+.dcard .basis{display:block;margin-top:9px;color:#7c8ca3;font-size:12.5px}
+.recommend{border-left:6px solid #16a06b}
+.notice{border-left:6px solid #f59e0b}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:16px 20px;border-radius:20px;background:#fff;border:1px solid #dfe9f5;box-shadow:0 10px 28px rgba(23,59,117,.07)}
+.toolbar input[type=search],.toolbar select{padding:10px 13px;border:1px solid #d3e0ef;border-radius:12px;font-size:14px;color:#22385a;background:#fbfdff;font-family:inherit}
+.toolbar input[type=search]{flex:1;min-width:180px}
+.toolbar label.chk{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:#3b5474;cursor:pointer;padding:9px 13px;border:1px solid #d3e0ef;border-radius:12px;background:#fbfdff}
+.toolbar button{padding:10px 17px;border:none;border-radius:12px;background:#1b61c2;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.toolbar button:hover{background:#144e9f}
+.count{font-size:14px;color:#657a96;margin-left:auto}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.venue{position:relative;padding:24px 26px 26px;border-radius:26px;background:#fff;border:1px solid #dde8f4;box-shadow:0 11px 32px rgba(23,59,117,.09);overflow:hidden;display:flex;flex-direction:column}
+.venue:before{content:"";position:absolute;left:0;top:0;bottom:0;width:7px;background:var(--accent)}
+.venue.hidden{display:none}
+.venue-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:18px}
+.venue-head h3{margin:0;color:#123d79;font-size:22px;line-height:1.35}
+.owner{margin:6px 0 0;color:#7688a0;font-size:13.5px}
+.owner b{color:#1b5cb6}
+.rank{flex:none;display:inline-flex;align-items:center;justify-content:center;min-width:36px;height:36px;border-radius:50%;background:var(--accent);color:#fff;font-weight:900;font-size:16px}
+.badge{margin-left:auto;flex:none;padding:6px 12px;border-radius:99px;font-size:13px;font-weight:800}
+.badge.warn{background:#fff4df;color:#b36a0a}
+.badge.ok{background:#eafaf1;color:#148354}
+.key-row{display:grid;grid-template-columns:1fr 1.4fr;gap:14px;margin-bottom:16px}
+.key-block{padding:16px 18px;border-radius:18px;background:#f3f8ff;border:1px solid #dbe9fb}
+.key-block.cost{background:#f0fbf5;border-color:#cfeedf}
+.key-block.unknown{background:#fff8ec;border-color:#f6e3c4}
+.key-block label{display:block;font-size:13px;font-weight:800;color:#6b7f99;letter-spacing:.5px}
+.key-block .big{margin:8px 0 4px;font-size:30px;font-weight:900;color:#14508f;line-height:1.1}
+.key-block.cost .big{color:#0f7a52}
+.key-block .big small{font-size:13px;font-weight:700;color:#7c8ca3;margin-left:5px}
+.key-block .sub{margin:4px 0;font-size:14.5px;font-weight:700;color:#2f4f78}
+.key-block .addr{margin:8px 0 0;font-size:13.5px;color:#3f5f88;font-weight:700;line-height:1.55}
+.key-block .raw{margin:9px 0 0;font-size:13px;line-height:1.65;color:#5c7492}
+.key-block .raw b{color:#14508f}
+.cost-detail{margin:10px 0 0;padding:10px 0 0;border-top:1px dashed #cfe6da}
+.cost-detail p{margin:0 0 7px;font-size:13px;line-height:1.5;color:#3f5c50}
+.cost-detail p span{display:inline-block;min-width:76px;color:#6d8a7e}
+.cost-detail p b{color:#0f7a52;font-size:14px}
+.cost-detail p em{display:block;margin-left:76px;font-style:normal;color:#8aa197;font-size:12px}
+.cost-detail .warn-line b{color:#b3760c}
+.gallery{margin:4px 0 14px;padding:16px 17px;border-radius:18px;background:linear-gradient(180deg,#f7fbff,#eef6ff);border:1px solid #d5e7fa}
+.gallery h4{margin:0 0 12px;color:#12457f;font-size:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.count-badge{padding:3px 10px;border-radius:99px;background:#1b61c2;color:#fff;font-size:12px;font-weight:700}
+.media-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.media-item{margin:0;border-radius:14px;overflow:hidden;background:#0d1b2e;border:1px solid #c9dcf2;box-shadow:0 6px 18px rgba(23,59,117,.14)}
+.media-item video,.media-item img{display:block;width:100%;height:230px;object-fit:contain;background:#0d1b2e}
+.media-item figcaption{display:flex;align-items:center;gap:8px;padding:9px 12px;background:#fff;font-size:12.5px;color:#2f4f78;font-weight:700}
+.mtag{padding:2px 8px;border-radius:99px;background:#e3f0ff;color:#1b5cb6;font-size:11px;font-weight:800;flex:none}
+.mtag.img{background:#f3e8ff;color:#7c3aed}
+.empty-gal{background:#fafcff;border-style:dashed}
+.fold{margin:0 0 10px;border-radius:14px;background:#fafcff;border:1px solid #e6eef8}
+.fold summary{padding:12px 15px;cursor:pointer;font-size:14px;font-weight:800;color:#1b5cb6;list-style:none}
+.fold summary::-webkit-details-marker{display:none}
+.fold summary:before{content:"▸";display:inline-block;margin-right:7px;transition:transform .2s}
+.fold[open] summary:before{transform:rotate(90deg)}
+.fold p{margin:0;padding:0 15px 14px;font-size:13.5px;line-height:1.8;color:#4c6685;white-space:pre-line}
+.fold p b{color:#14508f}
+.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 20px;margin:6px 0 14px}
+.meta{padding:9px 0;border-bottom:1px solid #eef2f7}
+.meta label{display:block;color:#8494a9;font-size:12.5px;margin-bottom:4px}
+.meta strong{display:block;color:#2d4665;font-size:13.5px;line-height:1.6;font-weight:600}
+.meta strong b{color:#14508f}
+.hint{margin:8px 0 0;font-size:12.5px;color:#8d9cb0;line-height:1.6}
+.missing{margin-top:auto;padding:13px 16px;border-radius:16px;background:#fff8ec;border:1px solid #f6e3c4}
+.missing.ok{background:#f0fbf5;border-color:#cfeedf}
+.missing-tag{display:inline-block;padding:4px 11px;border-radius:99px;background:#f59e0b;color:#fff;font-size:12.5px;font-weight:800}
+.missing-tag.ok{background:#12a579}
+.missing ul{margin:9px 0 0;padding-left:20px;font-size:13px;color:#8a5a12;line-height:1.7}
+.table-wrap{margin-top:8px;overflow-x:auto;border-radius:20px;background:#fff;border:1px solid #dfe9f5;box-shadow:0 10px 28px rgba(23,59,117,.075)}
+table{width:100%;border-collapse:collapse;min-width:1040px}
+th{padding:15px;text-align:left;color:#fff;background:#153f7b;font-size:14.5px}
+td{padding:14px 15px;border-top:1px solid #e5edf6;color:#38516f;font-size:13.5px;line-height:1.6;vertical-align:top}
+tr:nth-child(even) td{background:#f7faff}
+td .dim{color:#93a2b6;font-size:12.5px}
+td .hl{color:#0f7a52;font-size:15px}
+.summary{margin-top:28px;padding:28px 32px;border-radius:25px;color:#fff;background:linear-gradient(135deg,#0d2e61,#1859ad);box-shadow:0 16px 38px rgba(13,46,97,.22)}
+.summary h2{margin:0 0 14px;font-size:28px}
+.summary ul{margin:0;padding-left:23px;font-size:16px;line-height:1.95}
+.summary b{color:#a9d3ff}
+.foot{margin-top:18px;color:#71839a;font-size:13px;line-height:1.8}
+.foot a{color:#1b61c2}
+@media(max-width:1150px){.page{padding:22px}.hero h1{font-size:32px}.stats,.decision{grid-template-columns:1fr 1fr}.cards{grid-template-columns:1fr}.key-row{grid-template-columns:1fr}}
+@media(max-width:640px){.stats,.decision{grid-template-columns:1fr}.meta-grid{grid-template-columns:1fr}.page{padding:14px}.hero{padding:26px 22px}.hero h1{font-size:26px}.media-item video,.media-item img{height:180px}}
+@media print{body{background:#fff}.venue,.stat,.dcard{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<section class="hero">
+  <div class="eyebrow">🏠 9月18日团建｜轰趴馆候选横向对比</div>
+  <h1>项目中心轰趴馆筛选看板</h1>
+  <p>活动时间：<b>2026年9月18日</b>｜预计 <b>45人</b>｜候选 <b>6家</b>｜数据同步：<b>2026-09-11</b><br>
+  重点对比：<b>交通 · 总费用 · 店面环境实拍（视频/照片）</b>｜来源：飞书表格「最新」表</p>
+</section>
+
+<div class="stats">
+  <div class="stat"><b>6家</b><span>候选轰趴馆</span></div>
+  <div class="stat"><b>4家</b><span>可估算45人总费用</span></div>
+  <div class="stat"><b>7,243元</b><span>最低总费用（自在轰趴）</span></div>
+  <div class="stat"><b>8个</b><span>已下载现场视频</span></div>
+</div>
+
+<div class="section-title">一、快速决策 <span class="tag">先看重点</span></div>
+<div class="decision">
+  <div class="dcard recommend"><h3>🚗 交通最优｜漆轰趴</h3><p>约 <b>3.8 公里</b>，打车约 <b>10 分钟</b>｜物联网街330号</p><span class="basis">依据：表格「交通」+「具体位置」字段</span></div>
+  <div class="dcard recommend"><h3>💰 总费用最低｜自在轰趴</h3><p>45人估算 <b>7,243 元起</b>（场地 3,688 + 餐饮 3,555）</p><span class="basis">依据：表格场地费 + 餐饮餐标，按45人/每桌10人推算</span></div>
+  <div class="dcard notice"><h3>📹 实拍资料最全｜来-轰趴馆</h3><p>已取得 <b>2 段现场视频</b>；6家累计 <b>8 段视频 + 2 张照片</b>，全部可在本页直接播放。</p><span class="basis">依据：表格「现场视频」字段，已下载至本地</span></div>
+  <div class="dcard notice"><h3>⚠️ 优先补问｜壹启玩· / 来-轰趴</h3><p>这两家<b>餐饮餐标未填</b>，45人总费用暂时无法估算；另外 <b>漆轰趴</b>场地费 5988 元为6家最高，需确认是否含餐饮。</p><span class="basis">依据：餐饮字段缺失统计</span></div>
+</div>
+
+<div class="section-title">二、筛选与排序 <span class="tag">6家逐家对比</span></div>
+<div class="toolbar">
+  <input type="search" id="q" placeholder="🔍 搜索场馆名称、地址或设施…" aria-label="搜索场馆">
+  <select id="sort" aria-label="排序方式">
+    <option value="seq">默认顺序</option>
+    <option value="km">交通距离最近</option>
+    <option value="mins">打车时间最短</option>
+    <option value="total">45人总费用最低</option>
+    <option value="video">现场视频最多</option>
+    <option value="missing">缺失信息最少</option>
+  </select>
+  <label class="chk"><input type="checkbox" id="f-cost"> 可估算总费用</label>
+  <label class="chk"><input type="checkbox" id="f-video"> 有现场视频</label>
+  <button id="reset">清空筛选</button>
+  <span class="count" id="count"></span>
+</div>
+
+<div class="cards" id="cards" style="margin-top:20px">
+<article class="venue" id="v1" style="--accent:#2f80ed" data-name="echoo回声Z空间（滨江店）" data-km="11" data-mins="25" data-total="10660" data-video="1" data-missing="0">
+  <header class="venue-head">
+    <span class="rank">1</span>
+    <div><h3>echoo回声Z空间（滨江店）</h3><p class="owner">对接实习生：胡家静｜可容纳：<b>A区40人+</b></p></div>
+    <span class="badge ok">较完整</span>
+  </header>
+
+  <div class="key-row">
+    <div class="key-block traffic"><label>🚗 交通</label>
+      <p class="big">11<small>公里</small></p>
+      <p class="sub">打车约 25—30 分钟</p>
+      <p class="addr">📍 滨江区滨文路15号</p>
+      <p class="raw"><b>11公里</b>，打车25-<b>30分钟</b></p></div>
+    <div class="key-block cost"><label>💰 总费用（45人估算）</label>
+        <p class="big">10,660<small>元起</small></p>
+        <p class="sub">最高约 13,560 元</p>
+        <div class="cost-detail">
+          <p><span>场地费</span><b>6,660 元</b><em>148元/位 × 45人</em></p>
+          <p><span>餐饮（最低）</span><b>4,000 元</b><em>火锅（最低档 800元/桌）</em></p><p><span>餐饮（方案2）</span><b>6,000 元</b><em>火锅（中档 1200元/桌）</em></p><p><span>餐饮（方案3）</span><b>6,900 元</b><em>中餐（最低档 1380元/桌）</em></p>
+          
+        </div>
+        <p class="raw">周五到周日是148/位包含：轰趴师主持   备注：A区<b>40人</b>起订,不满起订人数按起订人数收费，超过起订人数按实际到场人数收费。</p></div>
+  </div>
+
+  <section class="gallery"><h4>📹 店面环境实拍 <span class="count-badge">1 个视频 · 1 张照片</span></h4><div class="media-grid"><figure class="media-item video"><video controls preload="metadata" playsinline poster="assets/images/echoo_poster.jpg" aria-label="echoo回声Z空间（滨江店） 场馆全貌视频"><source src="assets/videos/echoo.mp4" type="video/mp4">您的浏览器不支持视频播放。</video><figcaption><span class="mtag">🎬 视频 1</span><strong>场馆全貌视频</strong></figcaption></figure><figure class="media-item image"><img src="assets/images/echoo_stage.png" alt="echoo回声Z空间（滨江店） 舞台 / LED屏区域" loading="lazy"><figcaption><span class="mtag img">🖼️ 照片</span><strong>舞台 / LED屏区域</strong></figcaption></figure></div></section>
+
+  <details class="fold" open><summary>🍽️ 餐饮详细</summary><p>零食饮料畅享                  订餐餐标：<br>火锅：800/1200/1500—每桌<b>10人</b><br>中餐：1380/1880/2880/3680—每桌<b>10人</b><br>西餐：178/228/298/358—按位（<b>35位</b>起订）<br>烤全羊：大羊2288/小羊1988—每只                              订餐须知<br><br>1、火锅、烤全羊最迟提前1-2天预定，其余至少提前2-3天预定<br>2、西餐<b>35人</b>份起订<br>3、餐食定金收取餐费一半左右</p></details>
+  <details class="fold"><summary>🎮 场地设施</summary><p>A区包含：KTV包厢，ps4，switch，两台麻将机，两台街机，两台赛车机，超大会议厅（p3超大LED屏），台球，桌游室➕休闲观影</p></details>
+  <details class="fold"><summary>📋 取消 / 改期规则</summary><p>本次活动定金需知：<br>1、定金可在活动结束后原路退回或抵扣<br>2、场地只以定金的形式锁定，同一场地同一时间段先支付定金的先锁定<br>3、距离活动时间7天内因预定方主观原因需取消活动，定金（场地+第三方）无法退还，只可协商改期</p></details>
+
+  <div class="meta-grid">
+    <div class="meta"><label>可用时间 / 时长</label><strong>2026/9/18 17:00-23:00 目前可用</strong></div>
+    <div class="meta"><label>停车费用</label><strong>停车园区收费<b>5元</b>/h，24h内40封顶</strong></div>
+    <div class="meta"><label>押金</label><strong>场地定金1000/区</strong></div>
+    <div class="meta"><label>麦克风 / 舞台</label><strong>每个区<b>2个</b></strong></div>
+    <div class="meta"><label>综合评分</label><strong>未评分</strong></div>
+    <div class="meta"><label>现场视频原件</label><strong>1 个（已下载）</strong></div>
+  </div>
+  
+  <div class="missing ok"><span class="missing-tag ok">信息较完整</span></div>
+</article>
+<article class="venue" id="v2" style="--accent:#12a579" data-name="壹启玩·轰趴·团建（普大福地店）" data-km="10.6" data-mins="20" data-total="" data-video="1" data-missing="1">
+  <header class="venue-head">
+    <span class="rank">2</span>
+    <div><h3>壹启玩·轰趴·团建（普大福地店）</h3><p class="owner">对接实习生：胡家静｜可容纳：<b>40左右</b></p></div>
+    <span class="badge warn">缺 1 项</span>
+  </header>
+
+  <div class="key-row">
+    <div class="key-block traffic"><label>🚗 交通</label>
+      <p class="big">10.6<small>公里</small></p>
+      <p class="sub">打车约 20—25 分钟</p>
+      <p class="addr">📍 普庆路普大福地5栋206(钱江大院边上)</p>
+      <p class="raw"><b>10.6公里</b>，打车20-<b>25分钟</b></p></div>
+    <div class="key-block cost"><label>💰 总费用（45人估算）</label>
+        <p class="big">—</p>
+        
+        <div class="cost-detail">
+          <p><span>场地费</span><b>3,688 元</b><em>3688元/场（包场价）</em></p>
+          
+          <p class="warn-line"><span>餐饮</span><b>待询价</b><em>表格未提供餐标，总价无法估算</em></p>
+        </div>
+        <p class="raw">3688/场(不包含餐饮）</p></div>
+  </div>
+
+  <section class="gallery"><h4>📹 店面环境实拍 <span class="count-badge">1 个视频</span></h4><div class="media-grid"><figure class="media-item video"><video controls preload="metadata" playsinline poster="assets/images/yixiwan_poster.jpg" aria-label="壹启玩·轰趴·团建（普大福地店） 场馆全貌视频"><source src="assets/videos/yixiwan.mp4" type="video/mp4">您的浏览器不支持视频播放。</video><figcaption><span class="mtag">🎬 视频 1</span><strong>场馆全貌视频</strong></figcaption></figure></div></section>
+
+  <details class="fold" open><summary>🍽️ 餐饮详细</summary><p>额外赠送<b>24瓶</b>啤酒以及<b>6瓶</b>大瓶可乐（无额外零食）,需自点</p></details>
+  <details class="fold"><summary>🎮 场地设施</summary><p>2楼包场（<b>2个</b>轰趴房间一个ktv和<b>6个</b>台球）轰趴包厢内是包含k歌麻将 桌游 电玩等</p></details>
+  <details class="fold"><summary>📋 取消 / 改期规则</summary><p>押金取消不退可以延期<br>（需至少提前一天取消）</p></details>
+
+  <div class="meta-grid">
+    <div class="meta"><label>可用时间 / 时长</label><strong>目前可用</strong></div>
+    <div class="meta"><label>停车费用</label><strong><b>6元</b>/时,30封顶<br>免费提供<b>4张</b>全天停车券             超出部分门店半价15出售</strong></div>
+    <div class="meta"><label>押金</label><strong>1000</strong></div>
+    <div class="meta"><label>麦克风 / 舞台</label><strong>ktv<b>2个</b></strong></div>
+    <div class="meta"><label>综合评分</label><strong>未评分</strong></div>
+    <div class="meta"><label>现场视频原件</label><strong>1 个（已下载）</strong></div>
+  </div>
+  
+  <div class="missing"><span class="missing-tag">待确认 1 项</span><ul><li>餐饮餐标未填</li></ul></div>
+</article>
+<article class="venue" id="v3" style="--accent:#f59e0b" data-name="趣玩·春风轰趴·团建聚会·KTV（滨江江晖路店）" data-km="9" data-mins="30" data-total="8636" data-video="1" data-missing="0">
+  <header class="venue-head">
+    <span class="rank">3</span>
+    <div><h3>趣玩·春风轰趴·团建聚会·KTV（滨江江晖路店）</h3><p class="owner">对接实习生：胡家静｜可容纳：<b>40+</b></p></div>
+    <span class="badge ok">较完整</span>
+  </header>
+
+  <div class="key-row">
+    <div class="key-block traffic"><label>🚗 交通</label>
+      <p class="big">9<small>公里</small></p>
+      <p class="sub">打车约 30 分钟</p>
+      <p class="addr">📍 滨江春风集团6幢</p>
+      <p class="raw"><b>9公里</b>，打车<b>30分钟</b></p></div>
+    <div class="key-block cost"><label>💰 总费用（45人估算）</label>
+        <p class="big">8,636<small>元起</small></p>
+        <p class="sub">最高约 9,941 元</p>
+        <div class="cost-detail">
+          <p><span>场地费</span><b>4,181 元</b><em>92.9元/位 × 45人</em></p>
+          <p><span>餐饮（最低）</span><b>4,455 元</b><em>安格斯黑牛烧烤 99元/位</em></p><p><span>餐饮（方案2）</span><b>4,455 元</b><em>火锅 99元/位</em></p><p><span>餐饮（方案3）</span><b>5,760 元</b><em>原切升级烧烤 128元/位</em></p>
+          
+        </div>
+        <p class="raw">人均92.9(不含餐饮)</p></div>
+  </div>
+
+  <section class="gallery"><h4>📹 店面环境实拍 <span class="count-badge">1 个视频</span></h4><div class="media-grid"><figure class="media-item video"><video controls preload="metadata" playsinline poster="assets/images/quwan_poster.jpg" aria-label="趣玩·春风轰趴·团建聚会·KTV（滨江江晖路店） 场馆全貌视频"><source src="assets/videos/quwan.mp4" type="video/mp4">您的浏览器不支持视频播放。</video><figcaption><span class="mtag">🎬 视频 1</span><strong>场馆全貌视频</strong></figcaption></figure></div></section>
+
+  <details class="fold" open><summary>🍽️ 餐饮详细</summary><p>安格斯黑牛烧烤套餐99/人(<b>10人</b>起订)        安格斯黑牛原切升级烧烤128/位(<b>10人</b>起订) 火锅99/位(<b>10人</b>起订)  烤全羊1880/头(1头起订)                         烤猪1680/头(1头起订)                         甜品套餐(588-1288)   需自己买上饮料酒水零食水果</p></details>
+  <details class="fold"><summary>🎮 场地设施</summary><p>麻将机2<br>街机游戏机1<br>台球1<br>switch1<br>电竞1<br>KTV1间<br><b>130寸</b>会议电子大屏幕1<br>会议音响话筒<b>2个</b><br>话筒桌游若干<br>剧本杀若干</p></details>
+  <details class="fold"><summary>📋 取消 / 改期规则</summary><p>收取定金后视为预定场次成功。若退定场次，定金不予退还。</p></details>
+
+  <div class="meta-grid">
+    <div class="meta"><label>可用时间 / 时长</label><strong>目前可用</strong></div>
+    <div class="meta"><label>停车费用</label><strong><b>8元</b>/时,封顶<b>40元</b></strong></div>
+    <div class="meta"><label>押金</label><strong>每场<b>1000元</b></strong></div>
+    <div class="meta"><label>麦克风 / 舞台</label><strong>2</strong></div>
+    <div class="meta"><label>综合评分</label><strong>未评分</strong></div>
+    <div class="meta"><label>现场视频原件</label><strong>1 个（已下载）</strong></div>
+  </div>
+  
+  <div class="missing ok"><span class="missing-tag ok">信息较完整</span></div>
+</article>
+<article class="venue" id="v4" style="--accent:#8b5cf6" data-name="来-轰趴馆" data-km="4" data-mins="13" data-total="" data-video="2" data-missing="1">
+  <header class="venue-head">
+    <span class="rank">4</span>
+    <div><h3>来-轰趴馆</h3><p class="owner">对接实习生：马宇涵｜可容纳：<b>50+</b></p></div>
+    <span class="badge warn">缺 1 项</span>
+  </header>
+
+  <div class="key-row">
+    <div class="key-block traffic"><label>🚗 交通</label>
+      <p class="big">4<small>公里</small></p>
+      <p class="sub">打车约 13 分钟</p>
+      <p class="addr">📍 杭州市滨江区西兴街道</p>
+      <p class="raw"><b>4公里</b>,打车<b>13分钟</b></p></div>
+    <div class="key-block cost"><label>💰 总费用（45人估算）</label>
+        <p class="big">—</p>
+        
+        <div class="cost-detail">
+          <p><span>场地费</span><b>4,500 元</b><em>100元/位 × 45人</em></p>
+          
+          <p class="warn-line"><span>餐饮</span><b>待询价</b><em>表格未提供餐标，总价无法估算</em></p>
+        </div>
+        <p class="raw">100/人(不含餐饮)</p></div>
+  </div>
+
+  <section class="gallery"><h4>📹 店面环境实拍 <span class="count-badge">2 个视频</span></h4><div class="media-grid"><figure class="media-item video"><video controls preload="metadata" playsinline poster="assets/images/laihp_main_poster.jpg" aria-label="来-轰趴馆 场馆全貌视频"><source src="assets/videos/laihp_main.mp4" type="video/mp4">您的浏览器不支持视频播放。</video><figcaption><span class="mtag">🎬 视频 1</span><strong>场馆全貌视频</strong></figcaption></figure><figure class="media-item video"><video controls preload="metadata" playsinline poster="assets/images/laihp_stage_poster.jpg" aria-label="来-轰趴馆 舞台区域视频"><source src="assets/videos/laihp_stage.mp4" type="video/mp4">您的浏览器不支持视频播放。</video><figcaption><span class="mtag">🎬 视频 2</span><strong>舞台区域视频</strong></figcaption></figure></div></section>
+
+  <details class="fold" open><summary>🍽️ 餐饮详细</summary><p>表格未填写餐饮信息，需向场馆确认餐标。</p></details>
+  <details class="fold"><summary>🎮 场地设施</summary><p>●350平方米场地，配套火锅、烤肉工具、管家全程服务 <br>●PS5、switch、街机*2、德扑、飞镖、桌游、麻将*3、台球等 <br>●围棋/象棋/跳棋/五子棋/飞行棋 <br>●宽敞明亮通透的180度落地窗大厅 <br>●专业级KTV包房，<b>86寸</b>智能会议一体机</p></details>
+  <details class="fold"><summary>📋 取消 / 改期规则</summary><p>可以提前至少三天申请改期;定了之后不能取消退款</p></details>
+
+  <div class="meta-grid">
+    <div class="meta"><label>可用时间 / 时长</label><strong>目前可用</strong></div>
+    <div class="meta"><label>停车费用</label><strong><b>6元</b>/小时 <br>封顶<b>36元</b></strong></div>
+    <div class="meta"><label>押金</label><strong>定金2000</strong></div>
+    <div class="meta"><label>麦克风 / 舞台</label><strong>2</strong></div>
+    <div class="meta"><label>综合评分</label><strong>未评分</strong></div>
+    <div class="meta"><label>现场视频原件</label><strong>1 个（已下载）</strong></div>
+  </div>
+  
+  <div class="missing"><span class="missing-tag">待确认 1 项</span><ul><li>餐饮餐标未填</li></ul></div>
+</article>
+<article class="venue" id="v5" style="--accent:#e0575b" data-name="漆轰趴" data-km="3.8" data-mins="10" data-total="10428" data-video="1" data-missing="0">
+  <header class="venue-head">
+    <span class="rank">5</span>
+    <div><h3>漆轰趴</h3><p class="owner">对接实习生：马宇涵｜可容纳：<b>B区＋C区,40人+</b></p></div>
+    <span class="badge ok">较完整</span>
+  </header>
+
+  <div class="key-row">
+    <div class="key-block traffic"><label>🚗 交通</label>
+      <p class="big">3.8<small>公里</small></p>
+      <p class="sub">打车约 10 分钟</p>
+      <p class="addr">📍 物联网街330号</p>
+      <p class="raw"><b>3.8公里</b><b>.10分钟</b></p></div>
+    <div class="key-block cost"><label>💰 总费用（45人估算）</label>
+        <p class="big">10,428<small>元起</small></p>
+        <p class="sub">最高约 12,928 元</p>
+        <div class="cost-detail">
+          <p><span>场地费</span><b>5,988 元</b><em>5988元/场（包场价）</em></p>
+          <p><span>餐饮（最低）</span><b>4,440 元</b><em>中餐·超值 888元/套（8-10人）</em></p><p><span>餐饮（方案2）</span><b>5,940 元</b><em>中餐·精品 1188元/套（8-10人）</em></p><p><span>餐饮（方案3）</span><b>6,940 元</b><em>中餐·甄选 1388元/套（8-10人）</em></p>
+          
+        </div>
+        <p class="raw">5988/场(不含餐饮)</p></div>
+  </div>
+
+  <section class="gallery"><h4>📹 店面环境实拍 <span class="count-badge">1 个视频</span></h4><div class="media-grid"><figure class="media-item video"><video controls preload="metadata" playsinline poster="assets/images/qihp_poster.jpg" aria-label="漆轰趴 场馆全貌视频"><source src="assets/videos/qihp.mp4" type="video/mp4">您的浏览器不支持视频播放。</video><figcaption><span class="mtag">🎬 视频 1</span><strong>场馆全貌视频</strong></figcaption></figure></div></section>
+
+  <details class="fold" open><summary>🍽️ 餐饮详细</summary><p>烤全羊（烤前20斤）：2088/套 <br>披萨·轻享（4–<b>5人</b>）：488/套 <br>披萨·惬意（8–<b>10人</b>）：888/套 <br>中餐·超值（8–<b>10人</b>）：888/套 <br>中餐·精品（8–<b>10人</b>）：1188/套 <br>中餐·甄选（8–<b>10人</b>）：1388/套 <br>生日蛋糕（<b>8寸</b>，提前1天）：288 <br>甜品套餐（四种若干）：588/套 <br>自助 / 西式冷餐：价详询</p></details>
+  <details class="fold"><summary>🎮 场地设施</summary><p>麻将桌: 3<br>桌游桌： 2<br>KTV： 2<br>SWItCH： 2<br>PS5： 2<br>街机： 2<br> 娃娃机： 2<br> 食材操作台： 2<br> 舞台： 1<br> 多媒体 (LED 屏)：1<br> 台球桌： 1</p></details>
+  <details class="fold"><summary>📋 取消 / 改期规则</summary><p>开场前<b>48小时</b>外可以直接取消订单，<b>1000元</b>定金原路退还，开场前<b>48小时</b>内取消定金不退，</p></details>
+
+  <div class="meta-grid">
+    <div class="meta"><label>可用时间 / 时长</label><strong>晚上场 18:00-23:00,订餐送一小时</strong></div>
+    <div class="meta"><label>停车费用</label><strong>可领<b>4小时</b>的停车券，超出部分<b>4元</b>/小时，<b>40元</b>封顶</strong></div>
+    <div class="meta"><label>押金</label><strong><b>2个</b>馆是<b>1000元</b>                        因违约扣下的<b>1000元</b>定金可开发票供顾客报销   活动结束支付全款定金退回</strong></div>
+    <div class="meta"><label>麦克风 / 舞台</label><strong>2</strong></div>
+    <div class="meta"><label>综合评分</label><strong>未评分</strong></div>
+    <div class="meta"><label>现场视频原件</label><strong>1 个（已下载）</strong></div>
+  </div>
+  
+  <div class="missing ok"><span class="missing-tag ok">信息较完整</span></div>
+</article>
+<article class="venue" id="v6" style="--accent:#0d9488" data-name="自在轰趴" data-km="7" data-mins="20" data-total="7243" data-video="2" data-missing="0">
+  <header class="venue-head">
+    <span class="rank">6</span>
+    <div><h3>自在轰趴</h3><p class="owner">对接实习生：马宇涵｜可容纳：<b>50+</b></p></div>
+    <span class="badge ok">较完整</span>
+  </header>
+
+  <div class="key-row">
+    <div class="key-block traffic"><label>🚗 交通</label>
+      <p class="big">7<small>公里</small></p>
+      <p class="sub">打车约 20 分钟</p>
+      <p class="addr">📍 海威新界B座201室</p>
+      <p class="raw"><b>7公里</b><b>,20分钟</b></p></div>
+    <div class="key-block cost"><label>💰 总费用（45人估算）</label>
+        <p class="big">7,243<small>元起</small></p>
+        <p class="sub">最高约 8,548 元</p>
+        <div class="cost-detail">
+          <p><span>场地费</span><b>3,688 元</b><em>3688元/场（包场价）</em></p>
+          <p><span>餐饮（最低）</span><b>3,555 元</b><em>火锅 79元/位（不限量）</em></p><p><span>餐饮（方案2）</span><b>3,997 元</b><em>中餐套餐（20人餐×2 + 10人餐）</em></p><p><span>餐饮（方案3）</span><b>4,860 元</b><em>自助烧烤 108元/位（不限量）</em></p>
+          
+        </div>
+        <p class="raw">3688/场(不含餐饮)</p></div>
+  </div>
+
+  <section class="gallery"><h4>📹 店面环境实拍 <span class="count-badge">2 个视频 · 1 张照片</span></h4><div class="media-grid"><figure class="media-item video"><video controls preload="metadata" playsinline poster="assets/images/zizai_a_poster.jpg" aria-label="自在轰趴 场馆全貌视频 A"><source src="assets/videos/zizai_a.mp4" type="video/mp4">您的浏览器不支持视频播放。</video><figcaption><span class="mtag">🎬 视频 1</span><strong>场馆全貌视频 A</strong></figcaption></figure><figure class="media-item video"><video controls preload="metadata" playsinline poster="assets/images/zizai_b_poster.jpg" aria-label="自在轰趴 场馆全貌视频 B"><source src="assets/videos/zizai_b.mp4" type="video/mp4">您的浏览器不支持视频播放。</video><figcaption><span class="mtag">🎬 视频 2</span><strong>场馆全貌视频 B</strong></figcaption></figure><figure class="media-item image"><img src="assets/images/zizai_stage.png" alt="自在轰趴 舞台区域" loading="lazy"><figcaption><span class="mtag img">🖼️ 照片</span><strong>舞台区域</strong></figcaption></figure></div></section>
+
+  <details class="fold" open><summary>🍽️ 餐饮详细</summary><p>1. 自助烧烤<br><b>108元</b>/位，不限量畅吃畅饮。 <br>2. 中餐套餐（按桌计价，含米饭饮料）<br><b>10人</b>餐：<b>799元</b>（约<b>80元</b>/人） <br><b>15人</b>餐：<b>1195元</b>（约<b>80元</b>/人） <br><b>20人</b>餐：<b>1599元</b>（约<b>80元</b>/人） <br>3. 烤肉套餐（<b>10人</b>标准）<br>经典套餐：<b>99元</b>/人，<b>990元</b>/桌 <br>豪华套餐：<b>128元</b>/人，<b>1280元</b>/桌 <br>4. 火锅套餐<br><b>79元</b>/位，不限量畅吃。 <br>5. 披萨小食<br>单点模式，无统一套餐价。披萨<b>78元</b>起，小吃<b>14元</b>起，意面/焗饭<b>39元</b>起。 <br>6. 烤全羊/烤乳猪<br>烤全羊：<b>2088元</b>/只（20-25斤） <br>烤乳猪：<b>888元</b>/只（2只起订） <br>7. 酒水饮料零食<br>店内饮品：2-<b>18元</b>/瓶（如矿泉水<b>2元</b>，大可乐/雪碧<b>10元</b>） <br>零食：9种不限量畅吃（未标单价） <br>现调鸡尾酒桶：3L装，158-<b>258元</b>/桶 <br>8. 甜品台（按人数套餐）<br>小资下午茶：<b>888元</b>（10-<b>15人</b>） <br>豪华甜品台：<b>1588元</b>（20-<b>25人</b>） <br>土豪甜品台：<b>1888元</b>（35-<b>40人</b>）</p></details>
+  <details class="fold"><summary>🎮 场地设施</summary><p>KTV*1<br>街机*1<br>台球*1                                         PS5*<b>1                                             桌</b>游德扑若干                                   大厅舞台*SWTICH*1                          电脑*5<br>麻将*2<br>沙狐球*1</p></details>
+  <details class="fold"><summary>📋 取消 / 改期规则</summary><p>定金1000入账，场地预定成功<br>餐饮至少一天预定<br>开始前一周可更改不可退订</p></details>
+
+  <div class="meta-grid">
+    <div class="meta"><label>可用时间 / 时长</label><strong>18-23(白天若五场可17点进场)</strong></div>
+    <div class="meta"><label>停车费用</label><strong><b>6元</b>一小时，40封顶</strong></div>
+    <div class="meta"><label>押金</label><strong>1000</strong></div>
+    <div class="meta"><label>麦克风 / 舞台</label><strong>舞台<b>2个</b>,ktv<b>2个</b></strong></div>
+    <div class="meta"><label>综合评分</label><strong>未评分</strong></div>
+    <div class="meta"><label>现场视频原件</label><strong>2 个（已下载）</strong></div>
+  </div>
+  
+  <div class="missing ok"><span class="missing-tag ok">信息较完整</span></div>
+</article>
+</div>
+<p class="hint" id="empty" style="display:none;text-align:center;padding:30px">没有符合当前条件的场馆，请调整筛选条件。</p>
+
+<div class="section-title">三、关键字段对比 <span class="tag">便于最终决策</span></div>
+<div class="table-wrap"><table>
+<thead><tr><th>轰趴馆 / 对接人</th><th>交通 & 地址</th><th>45人总费用（估算）</th><th>店面实拍</th><th>押金</th><th>停车费用</th></tr></thead>
+<tbody><tr>
+  <td><strong>echoo回声Z空间（滨江店）</strong><br><span class="dim">胡家静｜A区40人+</span></td>
+  <td>11公里，打车25-30分钟<br><span class="dim">滨江区滨文路15号</span></td>
+  <td><b class="hl">10,660 元起</b><br><span class="dim">场地 6,660 + 餐饮 4,000</span></td>
+  <td>🎬 1 个视频<br>🖼️ 1 张照片</td>
+  <td>场地定金1000/区</td>
+  <td>停车园区收费5元/h，24h内40封顶</td>
+</tr><tr>
+  <td><strong>壹启玩·轰趴·团建（普大福地店）</strong><br><span class="dim">胡家静｜40左右</span></td>
+  <td>10.6公里，打车20-25分钟<br><span class="dim">普庆路普大福地5栋206(钱江大院边上)</span></td>
+  <td><span class="dim">餐饮需自点，表格未给餐标；赠24瓶啤酒+6瓶大瓶可乐</span></td>
+  <td>🎬 1 个视频</td>
+  <td>1000</td>
+  <td>6元/时,30封顶
+免费提供4张全天停车券             超出部分门店半价15出售</td>
+</tr><tr>
+  <td><strong>趣玩·春风轰趴·团建聚会·KTV（滨江江晖路店）</strong><br><span class="dim">胡家静｜40+</span></td>
+  <td>9公里，打车30分钟<br><span class="dim">滨江春风集团6幢</span></td>
+  <td><b class="hl">8,636 元起</b><br><span class="dim">场地 4,181 + 餐饮 4,455</span></td>
+  <td>🎬 1 个视频</td>
+  <td>每场1000元</td>
+  <td>8元/时,封顶40元</td>
+</tr><tr>
+  <td><strong>来-轰趴馆</strong><br><span class="dim">马宇涵｜50+</span></td>
+  <td>4公里,打车13分钟<br><span class="dim">杭州市滨江区西兴街道</span></td>
+  <td><span class="dim">350㎡大场地，可容纳50+人；餐饮表格未填</span></td>
+  <td>🎬 2 个视频</td>
+  <td>定金2000</td>
+  <td>6元/小时 
+封顶36元</td>
+</tr><tr>
+  <td><strong>漆轰趴</strong><br><span class="dim">马宇涵｜B区＋C区,40人+</span></td>
+  <td>3.8公里.10分钟<br><span class="dim">物联网街330号</span></td>
+  <td><b class="hl">10,428 元起</b><br><span class="dim">场地 5,988 + 餐饮 4,440</span></td>
+  <td>🎬 1 个视频</td>
+  <td>2个馆是1000元                        因违约扣下的1000元定金可开发票供顾客报销   活动结束支付全款定金退回</td>
+  <td>可领4小时的停车券，超出部分4元/小时，40元封顶</td>
+</tr><tr>
+  <td><strong>自在轰趴</strong><br><span class="dim">马宇涵｜50+</span></td>
+  <td>7公里,20分钟<br><span class="dim">海威新界B座201室</span></td>
+  <td><b class="hl">7,243 元起</b><br><span class="dim">场地 3,688 + 餐饮 3,555</span></td>
+  <td>🎬 2 个视频<br>🖼️ 1 张照片</td>
+  <td>1000</td>
+  <td>6元一小时，40封顶</td>
+</tr></tbody>
+</table></div>
+
+<div class="summary">
+  <h2>四、决策结论与下一步</h2>
+  <ul>
+    <li><b>总费用最低：</b>自在轰趴，45人约 <b>7,243 元起</b>（场地 3,688 元 + 餐饮 3,555 元）。</li>
+    <li><b>交通最优：</b>漆轰趴，约 <b>3.8 公里 / 10 分钟</b>；来·轰趴馆 4 公里、50+ 人容纳量，也是有力选项。</li>
+    <li><b>人数适配：</b>来·轰趴馆与自在轰趴均为 <b>50+ 人</b>，最贴合45人；echoo、趣玩、漆轰趴为 40+，45人需与场馆确认加位费用。</li>
+    <li><b>费用待补：</b>壹启玩（3688元/场）与来·轰趴馆（100元/位）<b>餐饮餐标未填</b>，无法算总价；这两家场地费最低，补齐后可能反超。</li>
+    <li><b>下一步动作：</b>按缺口逐家电话确认——餐饮餐标、45人是否加价、含餐饮总价、停车减免，确认后即可定稿比价。</li>
+  </ul>
+</div>
+
+<div class="foot">
+  数据来源：<a href="https://flhoep6pcq.feishu.cn/sheets/Gvkfs9M9RhUtgPtoUMsceEaEneO" target="_blank" rel="noopener noreferrer">飞书表格《9月18日团建轰趴馆筛选对比表》· 工作表「最新」</a>｜工作表ID：BkTcdh｜数据同步：2026-09-11｜活动日期：2026-09-18<br>
+  总费用口径说明：按 <b>45人</b>、餐饮按 <b>每桌10人</b> 折算桌数推算，为<b>估算区间</b>，不含酒水、加位费、超时费等，最终以场馆报价为准。<br>
+  视频说明：全部现场视频已下载并压缩至本页本地播放，无需跳转；漆轰趴的舞台图片在表格中已失效，故未展示。
+</div>
+
+</div>
+<script>
+const cards=[...document.querySelectorAll('.venue')];
+const q=document.getElementById('q'),sort=document.getElementById('sort'),count=document.getElementById('count'),empty=document.getElementById('empty');
+const fCost=document.getElementById('f-cost'),fVideo=document.getElementById('f-video');
+function apply(){const kw=q.value.trim().toLowerCase();let n=0;
+ cards.forEach(c=>{let ok=true;
+  if(kw&&!c.textContent.toLowerCase().includes(kw))ok=false;
+  if(fCost.checked&&!c.dataset.total)ok=false;
+  if(fVideo.checked&&c.dataset.video==='0')ok=false;
+  c.classList.toggle('hidden',!ok); if(ok)n++;});
+ count.textContent='显示 '+n+' / '+cards.length+' 家'; empty.style.display=n?'none':'block';}
+function doSort(){const k=sort.value;const arr=[...cards];
+ if(k==='seq'){arr.sort((a,b)=>a.id.localeCompare(b.id,undefined,{numeric:true}));}
+ else{arr.sort((a,b)=>{const g=e=>{const v=e.dataset[k];return v===''||v===undefined||isNaN(parseFloat(v))?null:parseFloat(v);};
+  const A=g(a),B=g(b); if(A===null&&B===null)return a.dataset.name.localeCompare(b.dataset.name);
+  if(A===null)return 1; if(B===null)return -1; return A-B;});}
+ arr.forEach(e=>document.getElementById('cards').appendChild(e));}
+sort.addEventListener('change',()=>{doSort();apply();});
+[q,fCost,fVideo].forEach(e=>e.addEventListener('input',apply));
+document.getElementById('reset').addEventListener('click',()=>{q.value='';fCost.checked=fVideo.checked=false;sort.value='seq';doSort();apply();});
+doSort();apply();
+</script>
+</body></html>
